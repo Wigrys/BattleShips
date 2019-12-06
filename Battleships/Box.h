@@ -23,6 +23,5 @@ public:
 	State getState();
 	void setState(State);
 	Ship* getOwner();
-
 };
 
