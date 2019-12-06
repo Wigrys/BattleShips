@@ -1,7 +1,7 @@
 #pragma once
-#include "Ship.h"
+class Ship;
 
-enum class State
+enum class BoxState
 {
 	free,
 	set,
@@ -14,14 +14,14 @@ enum class State
 class Box
 {
 private:
-	State state;
+	BoxState state;
 	Ship* owner;
 
 public:
 	Box();
 	~Box();
-	State getState();
-	void setState(State);
+	BoxState getState();
+	void setState(BoxState);
 	Ship* getOwner();
 };
 

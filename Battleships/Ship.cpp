@@ -2,7 +2,7 @@
 
 Ship::~Ship()
 {
-	delete[] ownedBoxes;
+	delete ownedBoxes;
 }
 
 void Ship::decrementNumberOfMasts()

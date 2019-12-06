@@ -2,7 +2,7 @@
 
 Box::Box()
 {
-	state = State::free;
+	state = BoxState::free;
 	owner = nullptr;
 }
 
@@ -11,12 +11,12 @@ Box::~Box()
 	delete owner;
 }
 
-State Box::getState()
+BoxState Box::getState()
 {
 	return state;
 }
 
-void Box::setState(State s)
+void Box::setState(BoxState s)
 {
 	state = s;
 }

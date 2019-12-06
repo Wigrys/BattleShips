@@ -7,13 +7,13 @@ private:
 	const int numberOfMasts;
 	bool alive;
 	int numberOfMastsLeft;
-	Box* ownedBoxes[];
+	Box** ownedBoxes;
 public:
 
-	Ship(int _numOfMasts, Box* tableOfBoxes[]) : numberOfMasts(_numOfMasts)
+	Ship(int _numOfMasts, Box tableOfBoxes[]) : numberOfMasts(_numOfMasts)
 	{
 		alive = true;
-		*ownedBoxes = *tableOfBoxes;
+		*ownedBoxes = tableOfBoxes;
 		numberOfMastsLeft = numberOfMasts;
 	}
 	~Ship();
@@ -21,7 +21,7 @@ public:
 	void decrementNumberOfMasts();
 	bool getAlivenessStatus();
 	bool isAnyMastLeft();
-	void setOwnedBoxesState(State state)
+	void setOwnedBoxesState(BoxState state)
 	{
 		for (int i = 0; i < numberOfMasts; i++)
 		{
