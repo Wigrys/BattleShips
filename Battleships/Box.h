@@ -3,7 +3,7 @@ class Ship;
 
 enum class BoxState
 {
-	free,
+	free = 0,
 	set,
 	unableToSet,
 	hit,

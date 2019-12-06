@@ -10,10 +10,10 @@ private:
 	Box** ownedBoxes;
 public:
 
-	Ship(int _numOfMasts, Box tableOfBoxes[]) : numberOfMasts(_numOfMasts)
+	Ship(int _numOfMasts, Box** tableOfBoxes) : numberOfMasts(_numOfMasts)
 	{
 		alive = true;
-		*ownedBoxes = tableOfBoxes;
+		ownedBoxes = tableOfBoxes;
 		numberOfMastsLeft = numberOfMasts;
 	}
 	~Ship();
