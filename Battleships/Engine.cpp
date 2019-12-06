@@ -63,7 +63,7 @@ void Engine::run()
 	}
 }
 
-std::list<int> Engine::readInput(int numberOfInput)
+std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc znakow
 {
 	std::list<int> inputList;
 	for (int i = 0; i < numberOfInput; i++)

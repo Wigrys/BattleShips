@@ -4,8 +4,8 @@
 
 int main()
 {
-	Engine a;
-	a.run();
+	//Engine a;
+	//a.run();
 
 	return 0;
 }
