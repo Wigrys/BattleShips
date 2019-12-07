@@ -9,10 +9,9 @@ private:
 	int numberOfMastsLeft;
 	Box** ownedBoxes;
 public:
-
 	Ship(int, Box**);
 	~Ship();
-
+	int getNumberOfMasts();
 	void decrementNumberOfMasts();
 	bool getAlivenessStatus();
 	bool isAnyMastLeft();

@@ -1,15 +1,7 @@
 #pragma once
+
+#include "BoxState.h"
 class Ship;
-
-enum class BoxState
-{
-	free = 0,
-	set,
-	unableToSet,
-	hit,
-	down
-};
-
 
 class Box
 {

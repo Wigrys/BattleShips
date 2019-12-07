@@ -7,10 +7,11 @@ class Board
 {
 private:
 	const int size = 10;
-	Box** board;
-
+	Box** tableOfBoxes;
 public:
 	Board();
 	~Board();
+	int getSize();
+	Box** getTableOfBoxes();
 };
 

@@ -14,6 +14,11 @@ Ship::~Ship()
 	delete[] ownedBoxes;
 }
 
+int Ship::getNumberOfMasts()
+{
+	return numberOfMasts;
+}
+
 void Ship::decrementNumberOfMasts()
 {
 	numberOfMastsLeft--;

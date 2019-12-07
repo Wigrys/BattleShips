@@ -46,6 +46,18 @@ void View::printSetShipsByHand()
 	system("cls");
 }
 
+void View::printBoardAsCharTable(char** board, int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		for (int h = 0; h < size; h++)
+		{
+			std::cout << board[i][h] << " ";
+		}
+		std::cout << std::endl;
+	}
+}
+
 void View::printMessage()
 {
 	if (message != "")

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+class Board;
 
 class View
 {
@@ -16,5 +17,7 @@ public:
 	void printSetShips();
 	void printSetShipsRandomly();
 	void printSetShipsByHand();
+
+	void printBoardAsCharTable(char**, int);
 };
 
