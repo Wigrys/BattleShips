@@ -17,7 +17,8 @@ public:
 	~Model();
 
 	char** getBoardConvertedToCharTable();
-	void addShip(Ship*);
-	bool isAbleToAddXMastedShip(int); // sprawdza czy jest jeszcze miejsce na x masztowy statek
+	void addShip(Ship*); //bede tworzyc obiekty porzebne do wywolania konstruktora i wywolam go jako argument funkcji addShip();
+	bool ableToAddXMastedShip(int); // sprawdza czy jest jeszcze miejsce na x masztowy statek
+	bool ableToAddShip();
 };
 

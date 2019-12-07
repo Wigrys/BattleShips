@@ -3,8 +3,8 @@
 
 Engine::Engine()
 {
-	model = std::make_shared<Model>();
-	view = std::make_shared <View>();
+	model = new Model();
+	view = new View();
 	state = menu;
 }
 
@@ -43,6 +43,7 @@ void Engine::run()
 			{
 			case '1':
 				view->printSetShipsRandomly();
+				
 				break;
 			case '2':
 				view->printSetShipsByHand();

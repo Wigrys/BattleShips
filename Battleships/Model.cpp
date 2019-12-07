@@ -8,10 +8,10 @@ Model::Model()
 	mapStateChar =
 	{
 		{ BoxState::free, 'f' },
-		{ BoxState::set, 'f' },
-		{ BoxState::unableToSet, 'f' },
-		{ BoxState::hit, 'f' },
-		{ BoxState::down, 'f' },
+		{ BoxState::set, 's' },
+		{ BoxState::unableToSet, 'u' },
+		{ BoxState::hit, 'h' },
+		{ BoxState::down, 'd' },
 	};
 }
 
@@ -44,7 +44,7 @@ void Model::addShip(Ship* _ship)
 	numberOfXMastedShips[_ship->getNumberOfMasts() - 1]++; //mast 1 is counted in table[0], mast 2 -> table[1] etc
 }
 
-bool Model::isAbleToAddXMastedShip(int numberOfMasts) //liczba masztow (1 ; 4)
+bool Model::ableToAddXMastedShip(int numberOfMasts) //liczba masztow (1 ; 4)
 {
 	if (numberOfXMastedShips[numberOfMasts] <= maxNumberOfMasts - (numberOfMasts - 1))
 	{
@@ -52,4 +52,9 @@ bool Model::isAbleToAddXMastedShip(int numberOfMasts) //liczba masztow (1 ; 4)
 	}
 	else
 		return false;
+}
+
+bool Model::ableToAddShip()
+{
+	return false;
 }

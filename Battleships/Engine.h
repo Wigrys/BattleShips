@@ -16,8 +16,8 @@ class Engine
 {
 private:
 	State state;
-	std::shared_ptr<Model> model;
-	std::shared_ptr<View> view;
+	Model* model;
+	View* view;
 
 public:
 	Engine();

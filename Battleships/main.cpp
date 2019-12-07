@@ -5,18 +5,12 @@
 
 int main()
 {
-	//Engine a;
-	//a.run();
-	Model* test = new Model();
-	char** tableOfChars = test->getBoardConvertedToCharTable();
-	for (int i = 0; i < 10; i++)
-	{
-		for (int h = 0; h < 10; h++)
-		{
-			std::cout << tableOfChars[i][h] << " ";
-		}
-		std::cout << std::endl;
-	}
+	/*Engine a;
+	a.run();*/
+	Model* model = new Model();
+	View* view = new View();
+	view->printBoardAsCharTable(model->getBoardConvertedToCharTable(), 10);
+
 
 	return 0;
 }
