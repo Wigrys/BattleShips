@@ -8,6 +8,7 @@ private:
 	bool alive;
 	int numberOfMastsLeft;
 	Box** ownedBoxes;
+	void setOwnerOfBoxes();
 public:
 	Ship(int, Box**);
 	~Ship();

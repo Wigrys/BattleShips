@@ -19,7 +19,17 @@ public:
 	~Model();
 
 	char** getBoardConvertedToCharTable();
-	void addShip(Ship*); //bede tworzyc obiekty porzebne do wywolania konstruktora i wywolam go jako argument funkcji addShip();
 	bool ableToAddXMastedShip(int); // sprawdza czy jest jeszcze miejsce na x masztowy statek
-	bool ableToSetShip(Coordinates, Orientation, int);
+	void addShip(Ship*); //bede tworzyc obiekty porzebne do wywolania konstruktora i wywolam go jako argument funkcji addShip();
+	bool ableToSetShipOnBoard(Coordinates, Orientation, int); //ten Ship w nazwie to nie jest dokladnie ship obiektowy
+	void setShipOnBoard(Coordinates, Orientation, int);
+
+	void tempSetShip(Coordinates, Orientation, int);
 };
+
+/*
+
+Trzeba niektore funkcje zagniezdzic i wywolywac tylko w innych funkcjach
+i ustwaic te funkcje jako private
+
+*/

@@ -52,7 +52,7 @@ void View::printBoardAsCharTable(char** board, int size)
 	{
 		for (int h = 0; h < size; h++)
 		{
-			std::cout << board[i][h] << " ";
+			std::cout << board[h][i] << " "; // wypisywanie dziwnie dziala, nie wiem czemu ale jak jest tak to jest dobrze, a jakby bylo [i][h] to zle
 		}
 		std::cout << std::endl;
 	}

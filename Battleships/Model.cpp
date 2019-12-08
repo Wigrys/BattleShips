@@ -54,7 +54,30 @@ bool Model::ableToAddXMastedShip(int numberOfMasts) //liczba masztow (1 ; 4)
 		return false;
 }
 
-bool Model::ableToSetShip(Coordinates c, Orientation o, int n)
+bool Model::ableToSetShipOnBoard(Coordinates c, Orientation o, int n)
 {
-	return false;
+	return board->ableToSetShip(c, o, n);
+}
+
+void Model::setShipOnBoard(Coordinates c, Orientation o, int n)
+{
+	board->setShip(c, o, n);
+}
+
+void Model::tempSetShip(Coordinates c, Orientation o, int n)
+{
+	if (ableToAddXMastedShip(n))
+	{
+		if (ableToSetShipOnBoard(c, o, n))
+		{
+			Box** boxes;
+			boxes = board->setShip(c, o, n);
+			Ship* s = new Ship(n, boxes);
+			addShip(s);
+		}
+		else
+			std::cout << "\nUnable to set Ship On Board - probably this boxes are already occupied.\n";
+	}
+	else
+		std::cout << "\nUnable to set Ship On Board - probably there are too many of ships with this number of masts.\n";
 }

@@ -15,5 +15,6 @@ public:
 	BoxState getState();
 	void setState(BoxState);
 	Ship* getOwner();
+	void setOwner(Ship*);
 };
 

@@ -48,28 +48,75 @@ Coordinates convertOrientationIntoCoordinates(Orientation orientation) // coordi
 bool coordinatesOutOfBoard(Coordinates c)
 {
 	if (c.x < 0 || c.x > 9 || c.y < 0 || c.y > 9)
-		return false;
-	else
 		return true;
+	else
+		return false;
 }
 
-
-bool Board::ableToSetShip(Coordinates coords, Orientation orientation, int numberOfMasts)
+Coordinates prepareXYLimitsAsCoordinates(Orientation orient, int numOfMasts)
 {
-	Coordinates v = convertOrientationIntoCoordinates(orientation);
-	if (orientation == horizontal)
-		coords.x--;
-	else
-		coords.y--;
-	for (int i = numberOfMasts - 1; i < numberOfMasts + 1; i++) 
+	Coordinates limits;
+	if (orient == Orientation::horizontal)
 	{
-		if (coordinatesOutOfBoard(coords))
-			return false;
-		else
+		limits.x = numOfMasts + 2;
+		limits.y = 3;
+	}
+	else
+	{
+		limits.x = 3;
+		limits.y = numOfMasts + 2;
+	}
+	return limits;
+}
+
+//sprawdza mi tylko w jednej kollumnie, trzbza zrobic zeby wokol statku tez sprawdzal
+bool Board::ableToSetShip(Coordinates coords, Orientation orientation, int numberOfMasts) //ogolnie to moznaby to poprawic zeby lepiej wygladalo
+{
+	Coordinates limit = prepareXYLimitsAsCoordinates(orientation, numberOfMasts);
+	Coordinates v = convertOrientationIntoCoordinates(orientation); // zastanawiam sie czy nie zrobic klasy pochodnej od coordinates, ktora by nic nie zmianiala tylko nazwe typu
+	coords.x--;
+	coords.y--;
+	for (int x = coords.x; x < coords.x + limit.x; x++)
+	{
+		for (int y = coords.y; y < coords.y + limit.y; y++)
 		{
-			if (tableOfBoxes[coords.x][coords.y].getState() != BoxState::free)
-				return false;
+
+			if (!coordinatesOutOfBoard(Coordinates() = {x, y}))
+			{
+				if (tableOfBoxes[x][y].getState() != BoxState::free)
+					return false;
+			}
 		}
 	}
 	return true;
+}
+
+Box** Board::setShip(Coordinates coords, Orientation orient, int numberOfMasts)
+{
+	Box** boxes = new Box * [numberOfMasts];
+	Coordinates startingCoordinates = coords;
+	Coordinates v = convertOrientationIntoCoordinates(orient);
+	for (int i = 0; i < numberOfMasts; i++)
+	{
+		tableOfBoxes[coords.x][coords.y].setState(BoxState::set);
+		boxes[i] = &tableOfBoxes[coords.x][coords.y];
+		coords.x += v.x;
+		coords.y += v.y;
+	}
+	Coordinates limit = prepareXYLimitsAsCoordinates(orient, numberOfMasts);
+	coords = startingCoordinates;
+	coords.x--;
+	coords.y--;
+	for (int x = coords.x; x < coords.x + limit.x; x++)
+	{
+		for (int y = coords.y; y < coords.y + limit.y; y++)
+		{
+			if (!coordinatesOutOfBoard(Coordinates() = { x, y }))
+			{
+				if (tableOfBoxes[x][y].getState() == BoxState::free)
+					tableOfBoxes[x][y].setState(BoxState::unableToSet);
+			}
+		}
+	}
+	return boxes;
 }

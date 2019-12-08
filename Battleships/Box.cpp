@@ -25,3 +25,8 @@ Ship* Box::getOwner()
 {
 	return owner;
 }
+
+void Box::setOwner(Ship* ship)
+{
+	owner = ship;
+}

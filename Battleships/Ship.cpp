@@ -1,10 +1,19 @@
 #include "Ship.h"
 
+void Ship::setOwnerOfBoxes()
+{
+	for (int i = 0; i < numberOfMasts; i++)
+	{
+		ownedBoxes[i]->setOwner(this);
+	}
+}
+
 Ship::Ship(int _numOfMasts, Box** tableOfBoxes) : numberOfMasts(_numOfMasts)
 {
 	alive = true;
 	ownedBoxes = tableOfBoxes;
 	numberOfMastsLeft = numberOfMasts;
+	setOwnerOfBoxes();
 }
 
 Ship::~Ship()

@@ -13,5 +13,6 @@ public:
 	int getSize();
 	Box** getTableOfBoxes();
 	bool ableToSetShip(Coordinates, Orientation, int);
+	Box** setShip(Coordinates, Orientation, int);
 };
 
