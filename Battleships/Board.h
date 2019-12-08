@@ -1,7 +1,6 @@
 #pragma once
 #include "Box.h"
-
-using namespace std;
+#include "Coordinates.h"
 
 class Board
 {
@@ -13,5 +12,6 @@ public:
 	~Board();
 	int getSize();
 	Box** getTableOfBoxes();
+	bool ableToSetShip(Coordinates, Orientation, int);
 };
 

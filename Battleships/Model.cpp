@@ -54,7 +54,7 @@ bool Model::ableToAddXMastedShip(int numberOfMasts) //liczba masztow (1 ; 4)
 		return false;
 }
 
-bool Model::ableToAddShip()
+bool Model::ableToSetShip(Coordinates c, Orientation o, int n)
 {
 	return false;
 }

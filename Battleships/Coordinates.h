@@ -5,3 +5,9 @@ struct Coordinates
 	int y;
 };
 
+enum Orientation
+{
+	horizontal,
+	vertical
+};
+
