@@ -8,7 +8,7 @@ Box::Box()
 
 Box::~Box()
 {
-	delete owner;
+	owner = nullptr;
 }
 
 BoxState Box::getState()

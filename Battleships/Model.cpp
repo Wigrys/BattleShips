@@ -64,6 +64,7 @@ void Model::setShipOnBoard(Coordinates c, Orientation o, int n)
 	board->setShip(c, o, n);
 }
 
+//identyczne cos musze napisac po prostu w engine gdy bede stawial statki
 void Model::tempSetShip(Coordinates c, Orientation o, int n)
 {
 	if (ableToAddXMastedShip(n))
@@ -76,7 +77,7 @@ void Model::tempSetShip(Coordinates c, Orientation o, int n)
 			addShip(s);
 		}
 		else
-			std::cout << "\nUnable to set Ship On Board - probably this boxes are already occupied.\n";
+			std::cout << "\nUnable to set Ship On Board - probably these boxes are already occupied.\n";
 	}
 	else
 		std::cout << "\nUnable to set Ship On Board - probably there are too many of ships with this number of masts.\n";

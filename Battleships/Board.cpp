@@ -69,24 +69,19 @@ Coordinates prepareXYLimitsAsCoordinates(Orientation orient, int numOfMasts)
 	return limits;
 }
 
-//sprawdza mi tylko w jednej kollumnie, trzbza zrobic zeby wokol statku tez sprawdzal
-bool Board::ableToSetShip(Coordinates coords, Orientation orientation, int numberOfMasts) //ogolnie to moznaby to poprawic zeby lepiej wygladalo
+bool Board::ableToSetShip(Coordinates coords, Orientation orientation, int numberOfMasts) //dziala zajebiscie
 {
-	Coordinates limit = prepareXYLimitsAsCoordinates(orientation, numberOfMasts);
-	Coordinates v = convertOrientationIntoCoordinates(orientation); // zastanawiam sie czy nie zrobic klasy pochodnej od coordinates, ktora by nic nie zmianiala tylko nazwe typu
-	coords.x--;
-	coords.y--;
-	for (int x = coords.x; x < coords.x + limit.x; x++)
+	Coordinates v = convertOrientationIntoCoordinates(orientation);
+	for (int i = 0; i < numberOfMasts; i++)
 	{
-		for (int y = coords.y; y < coords.y + limit.y; y++)
+		if (coordinatesOutOfBoard(coords))
 		{
-
-			if (!coordinatesOutOfBoard(Coordinates() = {x, y}))
-			{
-				if (tableOfBoxes[x][y].getState() != BoxState::free)
-					return false;
-			}
+			return false;
 		}
+		else if (tableOfBoxes[coords.x][coords.y].getState() != BoxState::free)
+				return false;
+		coords.x += v.x;
+		coords.y += v.y;
 	}
 	return true;
 }
@@ -96,6 +91,9 @@ Box** Board::setShip(Coordinates coords, Orientation orient, int numberOfMasts)
 	Box** boxes = new Box * [numberOfMasts];
 	Coordinates startingCoordinates = coords;
 	Coordinates v = convertOrientationIntoCoordinates(orient);
+
+	//setting states of boxes under ship
+	//and preparing table of boxes to return
 	for (int i = 0; i < numberOfMasts; i++)
 	{
 		tableOfBoxes[coords.x][coords.y].setState(BoxState::set);
@@ -103,10 +101,14 @@ Box** Board::setShip(Coordinates coords, Orientation orient, int numberOfMasts)
 		coords.x += v.x;
 		coords.y += v.y;
 	}
+
+
 	Coordinates limit = prepareXYLimitsAsCoordinates(orient, numberOfMasts);
 	coords = startingCoordinates;
 	coords.x--;
 	coords.y--;
+
+	//setting states near ship as unabletoset
 	for (int x = coords.x; x < coords.x + limit.x; x++)
 	{
 		for (int y = coords.y; y < coords.y + limit.y; y++)
