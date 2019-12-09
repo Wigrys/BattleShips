@@ -18,13 +18,14 @@ public:
 	Model();
 	~Model();
 
+	int getBoardSize();
 	char** getBoardConvertedToCharTable();
 	bool ableToAddXMastedShip(int); // sprawdza czy jest jeszcze miejsce na x masztowy statek
-	void addShip(Ship*); //bede tworzyc obiekty porzebne do wywolania konstruktora i wywolam go jako argument funkcji addShip();
+	void addShipToList(Ship*); //bede tworzyc obiekty porzebne do wywolania konstruktora i wywolam go jako argument funkcji addShip();
 	bool ableToSetShipOnBoard(Coordinates, Orientation, int); //ten Ship w nazwie to nie jest dokladnie ship obiektowy
 	void setShipOnBoard(Coordinates, Orientation, int);
 
-	void tempSetShip(Coordinates, Orientation, int);
+	bool setShip(Coordinates, Orientation, int);
 };
 
 /*

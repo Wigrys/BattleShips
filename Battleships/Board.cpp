@@ -102,7 +102,6 @@ Box** Board::setShip(Coordinates coords, Orientation orient, int numberOfMasts)
 		coords.y += v.y;
 	}
 
-
 	Coordinates limit = prepareXYLimitsAsCoordinates(orient, numberOfMasts);
 	coords = startingCoordinates;
 	coords.x--;

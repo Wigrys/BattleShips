@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include <conio.h>
+#include <windows.h>
 
 Engine::Engine()
 {
@@ -47,6 +48,25 @@ void Engine::run()
 				break;
 			case '2':
 				view->printSetShipsByHand();
+				for (int numberOfMasts = 4; numberOfMasts > 0; numberOfMasts--)
+				{
+					while (model->ableToAddXMastedShip(numberOfMasts))
+					{
+						view->printSetXMastedShip(numberOfMasts);
+						view->printBoardAsCharTable(model->getBoardConvertedToCharTable(), model->getBoardSize());
+						auto input = readInput(3);
+						std::list<int>::iterator iterator = input.begin();
+						Coordinates c = { *iterator++ - '0', *iterator++ - '0' };
+						Orientation o = *iterator == 'h' ? Orientation::horizontal : Orientation::vertical;
+						if (!model->setShip(c, o, numberOfMasts))
+						{
+							std::cout << "\nUnable to set this ship. Try again.";
+						}
+						else
+							std::cout << "\nSet ship at: " << c.x << ", " << c.y;
+						Sleep(1000);
+					}
+				}
 				break;
 			default:
 				view->setMessage("There is no such operation! Try again:\n");
@@ -70,6 +90,12 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 	for (int i = 0; i < numberOfInput; i++)
 	{
 		inputList.push_back(_getch());
+		std::list<int>::iterator iter = inputList.begin();
+		for (int h = 0; h < i; h++)
+			iter++;
+		std::cout << (char)*iter;
+		if ( i != numberOfInput - 1)
+			std::cout << ", ";
 	}
 	return inputList;
 }

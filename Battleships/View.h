@@ -17,6 +17,7 @@ public:
 	void printSetShips();
 	void printSetShipsRandomly();
 	void printSetShipsByHand();
+	void printSetXMastedShip(int x);
 
 	void printBoardAsCharTable(char**, int);
 };

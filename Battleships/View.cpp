@@ -46,13 +46,28 @@ void View::printSetShipsByHand()
 	system("cls");
 }
 
+void View::printSetXMastedShip(int x)
+{
+	system("cls");
+	std::cout << "Please enter coordinates (first x, then y)\nand orientation (horizontal [h]/vertical [v])\nof your " << x << " masted ship:\n";
+}
+
 void View::printBoardAsCharTable(char** board, int size)
 {
 	for (int i = 0; i < size; i++)
 	{
+		if (i == 0)
+		{
+			std::cout << " ";
+			for (int k = 0; k < size; k++)
+				std::cout << " " << k;
+			std::cout << "\n";
+		}
 		for (int h = 0; h < size; h++)
 		{
-			std::cout << board[h][i] << " "; // wypisywanie dziwnie dziala, nie wiem czemu ale jak jest tak to jest dobrze, a jakby bylo [i][h] to zle
+			if (h == 0)
+				std::cout << i;
+			std::cout << " " << board[h][i]; // wypisywanie dziwnie dziala, nie wiem czemu ale jak jest tak to jest dobrze, a jakby bylo [i][h] to zle
 		}
 		std::cout << std::endl;
 	}
