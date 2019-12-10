@@ -70,11 +70,16 @@ void Engine::run()
 				break;
 			default:
 				view->setMessage("There is no such operation! Try again:\n");
+				break;
 			}
+			state = play;
 			break;
 		}
 		case loadGame:
 			view->printLoadGame();
+			break;
+		case play:
+
 			break;
 		case exitState:
 			view->printExit();
@@ -96,6 +101,7 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 		std::cout << (char)*iter;
 		if ( i != numberOfInput - 1)
 			std::cout << ", ";
+		Sleep(200);
 	}
 	return inputList;
 }

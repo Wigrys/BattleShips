@@ -8,6 +8,7 @@ enum State
 {
 	menu,
 	setShips,
+	play,
 	loadGame,
 	exitState
 };
