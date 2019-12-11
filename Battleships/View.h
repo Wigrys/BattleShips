@@ -14,11 +14,16 @@ public:
 	void printMenu();
 	void printLoadGame();
 	void printExit();
+
 	void printSetShips();
 	void printSetShipsRandomly();
 	void printSetShipsByHand();
 	void printSetXMastedShip(int x);
+	void printRandomizationComputerShipsLocation();
 
-	void printBoardAsCharTable(char**, int);
+	void printPlayingBoards(char**, char**, int = 10);
+
+
+	void printBoardAsCharTable(char**, int = 10);
 };
 

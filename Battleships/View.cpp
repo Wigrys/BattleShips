@@ -40,6 +40,7 @@ void View::printSetShips()
 void View::printSetShipsRandomly()
 {
 	system("cls");
+	std::cout << "Randomizing position of your ships...\n";
 }
 void View::printSetShipsByHand()
 {
@@ -50,6 +51,51 @@ void View::printSetXMastedShip(int x)
 {
 	system("cls");
 	std::cout << "Please enter coordinates (first x, then y)\nand orientation (horizontal [h]/vertical [v])\nof your " << x << " masted ship:\n";
+}
+
+void View::printRandomizationComputerShipsLocation()
+{
+	std::cout << "\nTrying to randomly set computer ships...\n";
+}
+
+void View::printPlayingBoards(char** player1Board, char** player2Board, int size)
+{
+	system("cls");
+	// wypisywanie boardow
+	{
+		for (int i = 0; i < size; i++)
+		{
+			if (i == 0)
+			{
+				std::cout << "Enemy`s Board: \t\t\tYour board: \n";
+				for (int j = 0; j < 2; j++)
+				{
+					std::cout << " ";
+					for (int k = 0; k < size; k++)
+						std::cout << " " << k;
+					std::cout << "\t\t";
+				}
+				std::cout << "\n";
+			}
+			for (int h = 0; h < size; h++)
+			{
+				if (h == 0)
+					std::cout << i;
+				std::cout << " " << player2Board[h][i];
+			}
+
+			std::cout << "\t\t";
+
+			for (int h = 0; h < size; h++)
+			{
+				if (h == 0)
+					std::cout << i;
+				std::cout << " " << player1Board[h][i];
+			}
+			std::cout << std::endl;
+		}
+	} 
+	std::cout << "Enter coordinates of your shot (first x, then y):\n ";
 }
 
 void View::printBoardAsCharTable(char** board, int size)

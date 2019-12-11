@@ -6,10 +6,10 @@
 
 enum State
 {
-	menu,
-	setShips,
-	play,
-	loadGame,
+	menuState,
+	setShipsState,
+	playState,
+	loadGameState,
 	exitState
 };
 
@@ -17,11 +17,16 @@ class Engine
 {
 private:
 	State state;
-	Model* model;
+	Model* player[2];
 	View* view;
 
 public:
 	Engine();
     void run();
+	Model* setShipsByHand();
+	Model* setShipsRandomly();
+	bool playerShoot();
+	bool computerShoot();
+
 	std::list<int> readInput(int);
 };

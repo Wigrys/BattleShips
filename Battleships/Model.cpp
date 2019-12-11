@@ -7,14 +7,6 @@ Model::Model()
 	numberOfXMastedShips = new int[maxNumberOfMasts];
 	for (int i = 0; i < maxNumberOfMasts; i++)
 		numberOfXMastedShips[i] = 0;
-	mapStateChar =
-	{
-		{ BoxState::free, ' ' }, // 'f'
-		{ BoxState::set, 's' },
-		{ BoxState::unableToSet, ' ' }, // 'u'
-		{ BoxState::hit, 'h' },
-		{ BoxState::down, 'd' },
-	};
 }
 
 Model::~Model()
@@ -27,8 +19,22 @@ int Model::getBoardSize()
 	return board->getSize();
 }
 
+int Model::getMaxNumberOfMasts()
+{
+	return maxNumberOfMasts;
+}
+
 char** Model::getBoardConvertedToCharTable()
 {
+	mapStateChar =
+	{
+		{ BoxState::free, ' ' }, // 'f'
+		{ BoxState::set, 's' },
+		{ BoxState::unableToSet, ' ' }, // 'u'
+		{ BoxState::hit, 'h' },
+		{ BoxState::shot, 'o' },
+		{ BoxState::down, 'd' },
+	};
 	Box** tableOfBoxes = board->getTableOfBoxes();
 	char** tableOfChars = new char* [board->getSize()];
 	for (int i = 0; i < board->getSize(); i++)
@@ -45,11 +51,33 @@ char** Model::getBoardConvertedToCharTable()
 	return tableOfChars;
 }
 
-void Model::addShipToList(Ship* _ship)
+char** Model::getEnemyBoardConvertedToCharTable()
 {
-	ships.push_back(_ship);
-	numberOfXMastedShips[_ship->getNumberOfMasts() - 1]++; //mast 1 is counted in table[0], mast 2 -> table[1] etc
+	mapStateChar =
+	{
+		{ BoxState::free, ' ' }, // 'f'
+		{ BoxState::set, 'i' },
+		{ BoxState::unableToSet, ' ' }, // 'u'
+		{ BoxState::hit, 'h' },
+		{ BoxState::shot, 'o' },
+		{ BoxState::down, 'd' },
+	};
+	Box** tableOfBoxes = board->getTableOfBoxes();
+	char** tableOfChars = new char* [board->getSize()];
+	for (int i = 0; i < board->getSize(); i++)
+	{
+		tableOfChars[i] = new char[board->getSize()];
+	}
+	for (int i = 0; i < board->getSize(); i++)
+	{
+		for (int h = 0; h < board->getSize(); h++)
+		{
+			tableOfChars[i][h] = mapStateChar[tableOfBoxes[i][h].getState()];
+		}
+	}
+	return tableOfChars;
 }
+
 
 bool Model::ableToAddXMastedShip(int numberOfMasts) //liczba masztow (1 ; 4)
 {
@@ -71,17 +99,45 @@ void Model::setShipOnBoard(Coordinates c, Orientation o, int n)
 	board->setShip(c, o, n);
 }
 
-//identyczne cos musze napisac po prostu w engine gdy bede stawial statki
-bool Model::setShip(Coordinates c, Orientation o, int n)
+bool Model::addShipToList(Coordinates c, Orientation o, int n)
 {
 	if (ableToSetShipOnBoard(c, o, n))
 	{
 		Box** boxes;
 		boxes = board->setShip(c, o, n);
 		Ship* s = new Ship(n, boxes);
-		addShipToList(s);
+		ships.push_back(s);
+		numberOfXMastedShips[s->getNumberOfMasts() - 1]++;
 		return true;
 	}
 	else
 		return false;
+}
+
+bool Model::isAnyShipAlive()
+{
+	std::list<Ship*>::iterator iterator;
+	bool isAnyAlive = false;
+	for (iterator = ships.begin(); iterator != ships.end(); iterator++)
+	{
+		if ((*iterator)->isAnyMastLeft())
+			return true;
+	}
+	return false;
+}
+
+bool Model::receiveShot(Coordinates shotCoordinates)
+{
+	if (board->getBoxStateOfBox(shotCoordinates) == BoxState::set)
+	{
+		board->setBoxStateOfBox(shotCoordinates, BoxState::hit);
+		board->getBoxOwner(shotCoordinates)->decrementNumberOfMasts();
+		if (!board->getBoxOwner(shotCoordinates)->isAnyMastLeft())
+			board->getBoxOwner(shotCoordinates)->setOwnedBoxesState(BoxState::down);
+		return true;
+	}
+	else
+	if(board->getBoxStateOfBox(shotCoordinates) == BoxState::free || board->getBoxStateOfBox(shotCoordinates) == BoxState::unableToSet)
+		board->setBoxStateOfBox(shotCoordinates, BoxState::shot);
+	return false;
 }

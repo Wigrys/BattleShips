@@ -14,7 +14,6 @@ public:
 	~Ship();
 	int getNumberOfMasts();
 	void decrementNumberOfMasts();
-	bool getAlivenessStatus();
 	bool isAnyMastLeft();
 	void setOwnedBoxesState(BoxState);
 };

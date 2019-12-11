@@ -5,5 +5,6 @@ enum class BoxState
 	set,
 	unableToSet,
 	hit,
+	shot,
 	down
 };

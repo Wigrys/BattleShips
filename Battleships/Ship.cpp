@@ -33,11 +33,6 @@ void Ship::decrementNumberOfMasts()
 	numberOfMastsLeft--;
 }
 
-bool Ship::getAlivenessStatus()
-{
-	return alive;
-}
-
 bool Ship::isAnyMastLeft()
 {
 	if (numberOfMastsLeft == 0)

@@ -12,6 +12,10 @@ public:
 	~Board();
 	int getSize();
 	Box** getTableOfBoxes();
+	BoxState getBoxStateOfBox(Coordinates);
+	void setBoxStateOfBox(Coordinates, BoxState);
+	Ship* getBoxOwner(Coordinates);
+
 	bool ableToSetShip(Coordinates, Orientation, int);
 	Box** setShip(Coordinates, Orientation, int);
 };

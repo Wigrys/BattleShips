@@ -28,6 +28,21 @@ Box** Board::getTableOfBoxes()
 	return tableOfBoxes;
 }
 
+BoxState Board::getBoxStateOfBox(Coordinates coords)
+{
+	return tableOfBoxes[coords.x][coords.y].getState();
+}
+
+void Board::setBoxStateOfBox(Coordinates coords, BoxState state)
+{
+	tableOfBoxes[coords.x][coords.y].setState(state);
+}
+
+Ship* Board::getBoxOwner(Coordinates coords)
+{
+	return tableOfBoxes[coords.x][coords.y].getOwner();
+}
+
 Coordinates convertOrientationIntoCoordinates(Orientation orientation) // coordinates posluzy mi jako zespol vectora x i vectora y
 {
 	Coordinates v{ -1, -1 };

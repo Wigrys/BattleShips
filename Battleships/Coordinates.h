@@ -8,6 +8,7 @@ struct Coordinates
 enum Orientation
 {
 	horizontal,
-	vertical
+	vertical,
+	none
 };
 
