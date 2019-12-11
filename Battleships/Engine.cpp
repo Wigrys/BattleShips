@@ -44,13 +44,11 @@ void Engine::run()
 			switch (*input.begin())
 			{
 			case '1':
-				view->printSetShipsRandomly();
 				while ((player[0] = setShipsRandomly()) == nullptr);
 				break;
 			case '2':
 				//ustawianie swoich statkow recznie
-				while((player[0] = setShipsByHand()) == nullptr);
-				view->printBoardAsCharTable(player[0]->getBoardConvertedToCharTable());
+				while ((player[0] = setShipsByHand()) == nullptr);
 			default:
 				view->setMessage("There is no such operation! Try again:\n");
 				break;
@@ -59,6 +57,7 @@ void Engine::run()
 			view->printRandomizationComputerShipsLocation();
 			while ((player[1] = setShipsRandomly()) == nullptr);
 			std::cout << "Every single ship is placed... get ready to play!";
+			Sleep(2000);
 			state = State::playState;
 			break;
 		}
@@ -66,22 +65,40 @@ void Engine::run()
 			view->printLoadGame();
 			break;
 		case playState:
-			while (1)
+		{
+			bool gameInProgress = true;
+			while (gameInProgress)
 			{
-				while (playerShoot());
-				if (player[1]->isAnyShipAlive() == false)
+				bool playerHit = true;
+				while (playerHit)
 				{
-					break;
+					playerHit = playerShoot();
+					if (player[1]->isAnyShipAlive() == false)
+					{
+						gameInProgress = false;
+						break;
+					}
 				}
-				while (computerShoot());
-				if (player[0]->isAnyShipAlive() == false)
-				{
+				if (!gameInProgress)
 					break;
+				bool computerHit = true;
+				while (computerHit)
+				{
+					computerHit = computerShoot();
+					if (player[0]->isAnyShipAlive() == false)
+					{
+						gameInProgress = false;
+						break;
+					}
 				}
 			}
-			Sleep(5000);
+			view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
+			Sleep(3000);
 			state = State::menuState;
+			delete player[0];
+			delete player[1];
 			break;
+		}
 		case exitState:
 			view->printExit();
 			close = true;
@@ -132,6 +149,7 @@ Model* Engine::setShipsByHand()
 
 Model* Engine::setShipsRandomly()
 {
+	view->printSetShipsRandomly();
 	bool success = true;
 	int attempts = 0;
 	Model* preModel = new Model();

@@ -42,10 +42,6 @@ void View::printSetShipsRandomly()
 	system("cls");
 	std::cout << "Randomizing position of your ships...\n";
 }
-void View::printSetShipsByHand()
-{
-	system("cls");
-}
 
 void View::printSetXMastedShip(int x)
 {
@@ -55,7 +51,8 @@ void View::printSetXMastedShip(int x)
 
 void View::printRandomizationComputerShipsLocation()
 {
-	std::cout << "\nTrying to randomly set computer ships...\n";
+	system("cls");
+	std::cout << "Trying to randomly set computer ships...\n";
 }
 
 void View::printPlayingBoards(char** player1Board, char** player2Board, int size)
@@ -94,8 +91,7 @@ void View::printPlayingBoards(char** player1Board, char** player2Board, int size
 			}
 			std::cout << std::endl;
 		}
-	} 
-	std::cout << "Enter coordinates of your shot (first x, then y):\n ";
+	}
 }
 
 void View::printBoardAsCharTable(char** board, int size)
