@@ -55,6 +55,24 @@ void View::printRandomizationComputerShipsLocation()
 	std::cout << "Trying to randomly set computer ships...\n";
 }
 
+void View::printPlayerShot()
+{
+	std::cout << "Enter coordinates of your shot (first x, then y): " << "\n";
+}
+
+void View::printPlayerShotComment(bool hit)
+{
+	if (hit)
+		std::cout << "\nThere he is! You hit!\n";
+	else
+		std::cout << "\nOops, you missed.\n";
+}
+
+void View::printComputerShot(int x, int y, bool hit)
+{
+	std::cout << "\nComputer made shot on x: " << x << ", y: " << y << " and he " << (hit ? "hit." : "missed.") << "\n";
+}
+
 void View::printPlayingBoards(char** player1Board, char** player2Board, int size)
 {
 	system("cls");

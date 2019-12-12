@@ -183,15 +183,24 @@ Model* Engine::setShipsRandomly()
 
 bool Engine::computerShoot()
 {
-	return player[0]->receiveShot(Coordinates() = { randFromRange(0, 9), randFromRange(0, 9) });
+	int x = randFromRange(0, 9);
+	int y = randFromRange(0, 9);
+	bool hit = player[0]->receiveShot(Coordinates() = { x, y });
+	view->printComputerShot(x, y, hit);
+	Sleep(1000);
+	return hit;
 }
 
 bool Engine::playerShoot()
 {
 	view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
+	view->printPlayerShot();
 	auto input = readInput(2);
 	std::list<int>::iterator iterator = input.begin();
-	return player[1]->receiveShot(Coordinates() = { *iterator++ - '0', *iterator - '0' });
+	bool hit = player[1]->receiveShot(Coordinates() = { *iterator++ - '0', *iterator - '0' });
+	view->printPlayerShotComment(hit);
+	Sleep(1000);
+	return hit;
 }
 
 std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc znakow
@@ -204,8 +213,10 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 		for (int h = 0; h < i; h++)
 			iter++;
 		std::cout << (char)*iter;
-		if ( i != numberOfInput - 1)
+		if (i != numberOfInput - 1)
 			std::cout << ", ";
+		else
+			std::cout << ".";
 		Sleep(200);
 	}
 	return inputList;

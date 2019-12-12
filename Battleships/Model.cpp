@@ -56,7 +56,7 @@ char** Model::getEnemyBoardConvertedToCharTable()
 	mapStateChar =
 	{
 		{ BoxState::free, ' ' }, // 'f'
-		{ BoxState::set, 'i' },
+		{ BoxState::set, ' ' },
 		{ BoxState::unableToSet, ' ' }, // 'u'
 		{ BoxState::hit, 'h' },
 		{ BoxState::shot, 'o' },

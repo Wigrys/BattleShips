@@ -17,10 +17,12 @@ public:
 
 	void printSetShips();
 	void printSetShipsRandomly();
-	void printSetShipsByHand();
-	void printSetXMastedShip(int x);
+	void printSetXMastedShip(int);
 	void printRandomizationComputerShipsLocation();
 
+	void printPlayerShot();
+	void printPlayerShotComment(bool);
+	void printComputerShot(int, int, bool);
 	void printPlayingBoards(char**, char**, int = 10);
 
 
