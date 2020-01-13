@@ -22,9 +22,10 @@ public:
 	int getBoardSize();
 	int getMaxNumberOfMasts();
 	char** getBoardConvertedToCharTable();
+	int* getNumberOfXMastedShips();
 	char** getEnemyBoardConvertedToCharTable();
 
-
+	void decrementNumberOfXMastedShips(int);
 	bool ableToAddXMastedShip(int); // sprawdza czy jest jeszcze miejsce na x masztowy statek
 	bool ableToSetShipOnBoard(Coordinates, Orientation, int); //ten Ship w nazwie to nie jest dokladnie ship obiektowy
 	void setShipOnBoard(Coordinates, Orientation, int);

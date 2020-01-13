@@ -51,12 +51,17 @@ char** Model::getBoardConvertedToCharTable()
 	return tableOfChars;
 }
 
+int* Model::getNumberOfXMastedShips()
+{
+	return numberOfXMastedShips;
+}
+
 char** Model::getEnemyBoardConvertedToCharTable()
 {
 	mapStateChar =
 	{
 		{ BoxState::free, ' ' }, // 'f'
-		{ BoxState::set, ' ' },
+		{ BoxState::set, 'i' },
 		{ BoxState::unableToSet, ' ' }, // 'u'
 		{ BoxState::hit, 'h' },
 		{ BoxState::shot, 'o' },
@@ -78,6 +83,11 @@ char** Model::getEnemyBoardConvertedToCharTable()
 	return tableOfChars;
 }
 
+
+void Model::decrementNumberOfXMastedShips(int numberOfMasts)
+{
+	numberOfXMastedShips[numberOfMasts - 1]--;
+}
 
 bool Model::ableToAddXMastedShip(int numberOfMasts) //liczba masztow (1 ; 4)
 {
@@ -133,7 +143,10 @@ bool Model::receiveShot(Coordinates shotCoordinates)
 		board->setBoxStateOfBox(shotCoordinates, BoxState::hit);
 		board->getBoxOwner(shotCoordinates)->decrementNumberOfMasts();
 		if (!board->getBoxOwner(shotCoordinates)->isAnyMastLeft())
+		{
 			board->getBoxOwner(shotCoordinates)->setOwnedBoxesState(BoxState::down);
+			decrementNumberOfXMastedShips(board->getBoxOwner(shotCoordinates)->getNumberOfMasts());
+		}
 		return true;
 	}
 	else

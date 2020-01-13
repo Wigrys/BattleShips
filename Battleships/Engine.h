@@ -18,6 +18,7 @@ class Engine
 private:
 	State state;
 	Model* player[2];
+	int whoseTour;
 	View* view;
 
 public:
@@ -27,6 +28,7 @@ public:
 	Model* setShipsRandomly();
 	bool playerShoot();
 	bool computerShoot();
+	bool areCoordinatesOfShotOkay(Coordinates);
 
 	std::list<int> readInput(int);
 };

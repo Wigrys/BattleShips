@@ -82,13 +82,13 @@ void View::printPlayingBoards(char** player1Board, char** player2Board, int size
 		{
 			if (i == 0)
 			{
-				std::cout << "Enemy`s Board: \t\t\tYour board: \n";
+				std::cout << "Enemy`s Board: \t\t\t\tYour board: \n";
 				for (int j = 0; j < 2; j++)
 				{
 					std::cout << " ";
 					for (int k = 0; k < size; k++)
 						std::cout << " " << k;
-					std::cout << "\t\t";
+					std::cout << "\t\t\t";
 				}
 				std::cout << "\n";
 			}
@@ -99,7 +99,7 @@ void View::printPlayingBoards(char** player1Board, char** player2Board, int size
 				std::cout << " " << player2Board[h][i];
 			}
 
-			std::cout << "\t\t";
+			std::cout << "\t\t\t";
 
 			for (int h = 0; h < size; h++)
 			{
@@ -110,6 +110,18 @@ void View::printPlayingBoards(char** player1Board, char** player2Board, int size
 			std::cout << std::endl;
 		}
 	}
+}
+
+void View::printInvalidCoordinates()
+{
+	std::cout << "\nYou entered invalid coordinates of shot.\n";
+}
+
+void View::printResultOfGame(bool playerWon)
+{
+	std::cout << "You ";
+	if (playerWon)
+		std::cout << "won! Congratulations!";
 }
 
 void View::printBoardAsCharTable(char** board, int size)
@@ -133,12 +145,17 @@ void View::printBoardAsCharTable(char** board, int size)
 	}
 }
 
+void View::printShipsLeft(int* numberOfXMastedShips, int maxNumberOfShips)
+{
+	std::cout << "Enemy`s ships left: \n";
+	for (int i = 0; i < maxNumberOfShips; i++)
+	{
+		std::cout << maxNumberOfShips - i << "-masted: " << numberOfXMastedShips[maxNumberOfShips - i - 1] << "\n";
+	}
+}
+
 void View::printMessage()
 {
-	if (message != "")
-	{
-		std::cout << std::endl;
-		std::cout << message;
-		message = "";
-	}
+	std::cout << message << std::endl;
+	message = "";
 }

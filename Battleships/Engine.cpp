@@ -8,6 +8,7 @@ Engine::Engine()
 	player[1] = new Model(); //player[1] is second player/computer
 	view = new View();
 	state = menuState;
+	whoseTour = rand() % 2;
 }
 
 void Engine::run()
@@ -66,6 +67,7 @@ void Engine::run()
 			break;
 		case playState:
 		{
+			bool playerWon = false;
 			bool gameInProgress = true;
 			while (gameInProgress)
 			{
@@ -76,6 +78,7 @@ void Engine::run()
 					if (player[1]->isAnyShipAlive() == false)
 					{
 						gameInProgress = false;
+						playerWon = true;
 						break;
 					}
 				}
@@ -88,11 +91,13 @@ void Engine::run()
 					if (player[0]->isAnyShipAlive() == false)
 					{
 						gameInProgress = false;
+						playerWon = false;
 						break;
 					}
 				}
 			}
 			view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
+			view->printResultOfGame(playerWon);
 			Sleep(3000);
 			state = State::menuState;
 			delete player[0];
@@ -157,7 +162,7 @@ Model* Engine::setShipsRandomly()
 	{
 		while (preModel->ableToAddXMastedShip(numberOfMasts))
 		{
-			Coordinates c = { randFromRange(0, 9), randFromRange(0, 9) };
+			Coordinates c = { randFromRange(0, 10), randFromRange(0, 10) };
 			Orientation o = Orientation::none;
 			if (randFromRange(0, 2))
 				o = Orientation::horizontal;
@@ -183,42 +188,71 @@ Model* Engine::setShipsRandomly()
 
 bool Engine::computerShoot()
 {
-	int x = randFromRange(0, 9);
-	int y = randFromRange(0, 9);
+	int x = randFromRange(0, 10);
+	int y = randFromRange(0, 10);
 	bool hit = player[0]->receiveShot(Coordinates() = { x, y });
 	view->printComputerShot(x, y, hit);
 	Sleep(1000);
 	return hit;
 }
 
+bool Engine::areCoordinatesOfShotOkay(Coordinates coords)
+{
+	if (coords.x < 0 || coords.x > 9 || coords.y < 0 || coords.y > 9)
+		return false;
+	return true;
+}
+
 bool Engine::playerShoot()
 {
+	bool madeShot = false;
+	bool hit = false;
 	view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
-	view->printPlayerShot();
-	auto input = readInput(2);
-	std::list<int>::iterator iterator = input.begin();
-	bool hit = player[1]->receiveShot(Coordinates() = { *iterator++ - '0', *iterator - '0' });
-	view->printPlayerShotComment(hit);
-	Sleep(1000);
+	view->printShipsLeft(player[1]->getNumberOfXMastedShips(), player[1]->getMaxNumberOfMasts());
+	do
+	{
+		view->printPlayerShot();
+		auto input = readInput(2);
+		std::list<int>::iterator iterator = input.begin();
+		if (areCoordinatesOfShotOkay(Coordinates() = { *iterator++ - '0', *iterator - '0' }))
+		{
+			iterator = input.begin();
+			hit = player[1]->receiveShot(Coordinates() = { *iterator++ - '0', *iterator - '0' });
+			view->printPlayerShotComment(hit);
+			Sleep(1000);
+			madeShot = true;
+			break;
+		}
+		else
+		{
+			view->printInvalidCoordinates();
+			madeShot = false;
+		}
+	} while (!madeShot);
 	return hit;
 }
 
 std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc znakow
 {
 	std::list<int> inputList;
-	for (int i = 0; i < numberOfInput; i++)
+	for (int i = 0; i < numberOfInput;)
 	{
-		inputList.push_back(_getch());
-		std::list<int>::iterator iter = inputList.begin();
-		for (int h = 0; h < i; h++)
-			iter++;
-		std::cout << (char)*iter;
-		if (i != numberOfInput - 1)
-			std::cout << ", ";
-		else
-			std::cout << ".";
-		Sleep(200);
+		int inp = _getch();
+		if ((inp >= '0' && inp <= '9') || (inp == 'h' || inp == 'v' ))
+		{
+			inputList.push_back(inp);
+			std::list<int>::iterator iter = inputList.begin();
+
+			for (int h = 0; h < i; h++)
+				iter++;
+			std::cout << (char)*iter;
+			if (i != numberOfInput - 1)
+				std::cout << ", ";
+			else
+				std::cout << ".";
+			Sleep(200);
+			i++;
+		}
 	}
 	return inputList;
 }
-
