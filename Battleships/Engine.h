@@ -9,7 +9,10 @@ enum State
 	menuState,
 	loadGameState,
 	setShipsState,
+	setShipsRandomlyState,
+	setShipsByHandState,
 	playState,
+	endGameState,
 	pauseState,
 	exitState
 };
@@ -26,16 +29,24 @@ private:
 	State state;
 	Model* player[2];
 	Tour whoseTour;
+	bool gameInProgress;
+	bool playerWon;
 	View* view;
 	const int maxNumberOfMasts = 1;
 	std::map<State, State> mapEscapeState;
 public:
+
 	Engine();
     void run();
+
 	Model* setShipsByHand();
 	Model* setShipsRandomly();
+
 	bool playerShoot();
 	bool computerShoot();
+
+	bool AIShoot(Board* enemyBoard);
+
 	bool areCoordinatesOfShotOkay(Coordinates);
 
 	std::list<int> readInput(int);

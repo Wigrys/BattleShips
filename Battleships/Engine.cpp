@@ -19,7 +19,8 @@ Engine::Engine()
 		{State::playState, State::pauseState},
 		{State::pauseState, State::playState}
 	};
-
+	gameInProgress = false;
+	playerWon = false;
 }
 
 void Engine::run()
@@ -56,21 +57,35 @@ void Engine::run()
 			switch (*input.begin())
 			{
 			case '1':
-				while ((player[0] = setShipsRandomly()) == nullptr);
+				state = setShipsRandomlyState;
 				break;
 			case '2':
-				//ustawianie swoich statkow recznie
-				while ((player[0] = setShipsByHand()) == nullptr);
+				state = setShipsByHandState;
+				break;
 			default:
 				view->setMessage("There is no such operation! Try again:\n");
 				break;
 			}
-			//ustawianie statkow komputera losowo
+			break;
+		}
+		case setShipsRandomlyState:
+		{
+			while ((player[0] = setShipsRandomly()) == nullptr);
 			view->printRandomizationComputerShipsLocation();
 			while ((player[1] = setShipsRandomly()) == nullptr);
 			std::cout << "Every single ship is placed... get ready to play!";
 			Sleep(2000);
-			state = State::playState;
+			state = playState;
+			break;
+		}
+		case setShipsByHandState:
+		{
+			while ((player[0] = setShipsByHand()) == nullptr);
+			view->printRandomizationComputerShipsLocation();
+			while ((player[1] = setShipsRandomly()) == nullptr);
+			std::cout << "Every single ship is placed... get ready to play!";
+			Sleep(2000);
+			state = playState;
 			break;
 		}
 		case loadGameState:
@@ -78,45 +93,45 @@ void Engine::run()
 			break;
 		case playState:
 		{
-			bool playerWon = false;
-			bool gameInProgress = true;
-			while (gameInProgress)
+			view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
+			view->printShipsLeft(player[1]->getNumberOfXMastedShips(), player[1]->getMaxNumberOfMasts());
+			if (whoseTour == 0)
 			{
-				view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
-				view->printShipsLeft(player[1]->getNumberOfXMastedShips(), player[1]->getMaxNumberOfMasts());
-				if (whoseTour == 0)
-				{
-					if (!playerShoot())
-						whoseTour = Tour::computer;
-				}
-				else
-				{
-					if (!computerShoot())
-						whoseTour = Tour::player;
-				}
-				if (!player[0]->isAnyShipAlive())
-				{
-					playerWon = false;
-					gameInProgress = false;
-				}
-				if (!player[1]->isAnyShipAlive())
-				{
-					playerWon = true;
-					gameInProgress = false;
-				}
+				if (!playerShoot())
+					whoseTour = Tour::computer;
 			}
+			else
+			{
+				if (!computerShoot())
+					whoseTour = Tour::player;
+			}
+			if (!player[0]->isAnyShipAlive())
+			{
+				playerWon = false;
+				state = endGameState;
+			}
+			if (!player[1]->isAnyShipAlive())
+			{
+				playerWon = true;
+				state = endGameState;
+			}
+			break;
+		}
+		case endGameState:
+		{
 			view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
 			if (playerWon)
 				view->printPlayerWon();
 			else
 				view->printComputerWon();
 			Sleep(3000);
-			state = State::menuState;
 			delete player[0];
 			delete player[1];
+			state = menuState;
 			break;
 		}
 		case pauseState:
+
 			break;
 		case exitState:
 			view->printExit();
@@ -200,7 +215,7 @@ Model* Engine::setShipsRandomly()
 	return nullptr;
 }
 
-bool Engine::computerShoot()
+bool Engine::computerShoot() //completely random shot
 {
 	int x = randFromRange(0, 10);
 	int y = randFromRange(0, 10);
@@ -208,6 +223,11 @@ bool Engine::computerShoot()
 	view->printComputerShot(x, y, hit);
 	Sleep(1000);
 	return hit;
+}
+
+bool Engine::AIShoot(Board* enemyBoard)
+{
+	return true;
 }
 
 bool Engine::areCoordinatesOfShotOkay(Coordinates coords)
@@ -225,6 +245,7 @@ bool Engine::playerShoot()
 	{
 		view->printPlayerShot();
 		auto input = readInput(2);
+
 		std::list<int>::iterator iterator = input.begin();
 		if (areCoordinatesOfShotOkay(Coordinates() = { *iterator++ - '0', *iterator - '0' }))
 		{
@@ -250,8 +271,8 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 	for (int i = 0; i < numberOfInput;)
 	{
 		int inp = _getch();
-		//if (inp = 27) //27 = ESC
-			//state = pauseState; 
+		if (inp = 27) //27 = ESC
+			state = pauseState; 
 		if ((inp >= '0' && inp <= '9') || (inp == 'h' || inp == 'v'))
 		{
 			inputList.push_back(inp);
@@ -270,3 +291,4 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 	}
 	return inputList;
 }
+

@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="main.cpp" />
@@ -160,9 +161,9 @@
     <ClCompile Include="View.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Box.h" />
-    <ClInclude Include="BoxState.h" />
     <ClInclude Include="Coordinates.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Model.h" />
