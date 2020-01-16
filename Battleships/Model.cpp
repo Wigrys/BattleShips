@@ -1,7 +1,7 @@
 #include "Model.h"
 #include <iostream>
 
-Model::Model()
+Model::Model(int _maxNumberOfMasts) : maxNumberOfMasts(_maxNumberOfMasts)
 {
 	board = new Board();
 	numberOfXMastedShips = new int[maxNumberOfMasts];

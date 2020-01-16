@@ -25,6 +25,8 @@ public:
 	void printComputerShot(int, int, bool);
 	void printPlayingBoards(char**, char**, int = 10);
 	void printInvalidCoordinates();
+	void printPlayerWon();
+	void printComputerWon();
 	void printResultOfGame(bool);
 
 

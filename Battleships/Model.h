@@ -9,14 +9,14 @@
 class Model
 {
 private:
-	const int maxNumberOfMasts = 4; // ustawianie liczby statkow (5 - jeden 5 masztowiec, dwa 4 masztowce itd... 4 - jeden 4 masztowiec, dwa 3 masztowce itd...)
+	const int maxNumberOfMasts; // ustawianie liczby statkow (5 - jeden 5 masztowiec, dwa 4 masztowce itd... 4 - jeden 4 masztowiec, dwa 3 masztowce itd...)
 	Board* board;
 	std::list<Ship*> ships;
 	int* numberOfXMastedShips;
 	std::map<BoxState, char> mapStateChar;
 
 public:
-	Model();
+	Model(int maxNumberOfMasts);
 	~Model();
 
 	int getBoardSize();

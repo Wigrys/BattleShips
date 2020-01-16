@@ -7,8 +7,8 @@
 int main()
 {
 	srand(time(NULL));
-	Engine a;
-	a.run();
+	Engine* a = new Engine();
+	a->run();
 	return 0;
 }
 

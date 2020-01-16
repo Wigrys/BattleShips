@@ -117,6 +117,16 @@ void View::printInvalidCoordinates()
 	std::cout << "\nYou entered invalid coordinates of shot.\n";
 }
 
+void View::printPlayerWon()
+{
+	std::cout << "You won! Congratulations!";
+}
+
+void View::printComputerWon()
+{
+	std::cout << "You lost! What a shame!";
+}
+
 void View::printResultOfGame(bool playerWon)
 {
 	std::cout << "You ";

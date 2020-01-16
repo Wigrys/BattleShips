@@ -4,11 +4,22 @@
 
 Engine::Engine()
 {
-	player[0] = new Model(); //player[0] is first player
-	player[1] = new Model(); //player[1] is second player/computer
+	player[0] = new Model(maxNumberOfMasts); //player[0] is first player
+	player[1] = new Model(maxNumberOfMasts); //player[1] is second player/computer
 	view = new View();
 	state = menuState;
-	whoseTour = rand() % 2;
+	if (rand() % 2 == 0)
+		whoseTour = Tour::player;
+	else
+		whoseTour = Tour::computer;
+	mapEscapeState =
+	{
+		{State::loadGameState, State::menuState},
+		{State::setShipsState, State::menuState},
+		{State::playState, State::pauseState},
+		{State::pauseState, State::playState}
+	};
+
 }
 
 void Engine::run()
@@ -71,39 +82,42 @@ void Engine::run()
 			bool gameInProgress = true;
 			while (gameInProgress)
 			{
-				bool playerHit = true;
-				while (playerHit)
+				view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
+				view->printShipsLeft(player[1]->getNumberOfXMastedShips(), player[1]->getMaxNumberOfMasts());
+				if (whoseTour == 0)
 				{
-					playerHit = playerShoot();
-					if (player[1]->isAnyShipAlive() == false)
-					{
-						gameInProgress = false;
-						playerWon = true;
-						break;
-					}
+					if (!playerShoot())
+						whoseTour = Tour::computer;
 				}
-				if (!gameInProgress)
-					break;
-				bool computerHit = true;
-				while (computerHit)
+				else
 				{
-					computerHit = computerShoot();
-					if (player[0]->isAnyShipAlive() == false)
-					{
-						gameInProgress = false;
-						playerWon = false;
-						break;
-					}
+					if (!computerShoot())
+						whoseTour = Tour::player;
+				}
+				if (!player[0]->isAnyShipAlive())
+				{
+					playerWon = false;
+					gameInProgress = false;
+				}
+				if (!player[1]->isAnyShipAlive())
+				{
+					playerWon = true;
+					gameInProgress = false;
 				}
 			}
 			view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
-			view->printResultOfGame(playerWon);
+			if (playerWon)
+				view->printPlayerWon();
+			else
+				view->printComputerWon();
 			Sleep(3000);
 			state = State::menuState;
 			delete player[0];
 			delete player[1];
 			break;
 		}
+		case pauseState:
+			break;
 		case exitState:
 			view->printExit();
 			close = true;
@@ -119,7 +133,7 @@ int randFromRange(int x, int y)
 
 Model* Engine::setShipsByHand()
 {
-	Model* preModel = new Model();
+	Model* preModel = new Model(maxNumberOfMasts);
 	for (int numberOfMasts = preModel->getMaxNumberOfMasts(); numberOfMasts > 0; numberOfMasts--)
 	{
 		while (preModel->ableToAddXMastedShip(numberOfMasts))
@@ -157,7 +171,7 @@ Model* Engine::setShipsRandomly()
 	view->printSetShipsRandomly();
 	bool success = true;
 	int attempts = 0;
-	Model* preModel = new Model();
+	Model* preModel = new Model(maxNumberOfMasts);
 	for (int numberOfMasts = preModel->getMaxNumberOfMasts(); numberOfMasts > 0; numberOfMasts--)
 	{
 		while (preModel->ableToAddXMastedShip(numberOfMasts))
@@ -207,8 +221,6 @@ bool Engine::playerShoot()
 {
 	bool madeShot = false;
 	bool hit = false;
-	view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
-	view->printShipsLeft(player[1]->getNumberOfXMastedShips(), player[1]->getMaxNumberOfMasts());
 	do
 	{
 		view->printPlayerShot();
@@ -238,7 +250,9 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 	for (int i = 0; i < numberOfInput;)
 	{
 		int inp = _getch();
-		if ((inp >= '0' && inp <= '9') || (inp == 'h' || inp == 'v' ))
+		//if (inp = 27) //27 = ESC
+			//state = pauseState; 
+		if ((inp >= '0' && inp <= '9') || (inp == 'h' || inp == 'v'))
 		{
 			inputList.push_back(inp);
 			std::list<int>::iterator iter = inputList.begin();

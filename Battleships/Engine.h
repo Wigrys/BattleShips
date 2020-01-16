@@ -7,10 +7,17 @@
 enum State
 {
 	menuState,
+	loadGameState,
 	setShipsState,
 	playState,
-	loadGameState,
+	pauseState,
 	exitState
+};
+
+enum Tour
+{
+	player,
+	computer
 };
 
 class Engine
@@ -18,9 +25,10 @@ class Engine
 private:
 	State state;
 	Model* player[2];
-	int whoseTour;
+	Tour whoseTour;
 	View* view;
-
+	const int maxNumberOfMasts = 1;
+	std::map<State, State> mapEscapeState;
 public:
 	Engine();
     void run();
