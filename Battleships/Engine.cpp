@@ -150,7 +150,6 @@ int randFromRange(int x, int y)
 
 Model* Engine::setShipsByHand()
 {
-	bool agree = true;
 	Model* preModel = new Model(maxNumberOfMasts);
 	for (int numberOfMasts = preModel->getMaxNumberOfMasts(); numberOfMasts > 0; numberOfMasts--)
 	{
@@ -175,13 +174,13 @@ Model* Engine::setShipsByHand()
 			Sleep(1000);
 		}
 	}
-	// tutaj bedzie pytanie czy plansza odpowiada graczowi
+	bool agree = true; // tutaj bedzie pytanie czy plansza odpowiada graczowi
 	if (agree)
 	{
 		return preModel;
 	}
 	delete preModel;
-	return nullptr;
+	return false;
 }
 
 Model* Engine::setShipsRandomly()
@@ -275,10 +274,7 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 	{
 		int inp = _getch();
 		if (inp = 27) //27 = ESC
-		{
-			state = pauseState;
-			return ;
-		}
+			state = pauseState; 
 		if ((inp >= '0' && inp <= '9') || (inp == 'h' || inp == 'v'))
 		{
 			inputList.push_back(inp);
