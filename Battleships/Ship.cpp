@@ -8,11 +8,13 @@ void Ship::setOwnerOfBoxes()
 	}
 }
 
-Ship::Ship(int _numOfMasts, Box** tableOfBoxes) : numberOfMasts(_numOfMasts)
+Ship::Ship(int _numOfMasts, Box** tableOfBoxes, Coordinates _coords, Orientation _orientation) : numberOfMasts(_numOfMasts)
 {
 	alive = true;
 	ownedBoxes = tableOfBoxes;
 	numberOfMastsLeft = numberOfMasts;
+	startCoords = _coords;
+	orientation = _orientation;
 	setOwnerOfBoxes();
 }
 
@@ -26,6 +28,16 @@ Ship::~Ship()
 int Ship::getNumberOfMasts()
 {
 	return numberOfMasts;
+}
+
+Coordinates Ship::getStartCoords()
+{
+	return startCoords;
+}
+
+Orientation Ship::getOrientation()
+{
+	return orientation;
 }
 
 void Ship::decrementNumberOfMasts()

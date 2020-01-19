@@ -24,13 +24,18 @@ int Model::getMaxNumberOfMasts()
 	return maxNumberOfMasts;
 }
 
-char** Model::getBoardConvertedToCharTable()
+std::list<Ship*> Model::getShips()
+{
+	return ships;
+}
+
+char** Model::getBoardConvertedToCharTable() //powinna byc jedna funkcja ktora konwertuje plansze do gry, a druga zeby konwertowac po prostus
 {
 	mapStateChar =
 	{
-		{ BoxState::free, ' ' }, // 'f'
+		{ BoxState::free, '.' }, // 'f'
 		{ BoxState::set, 's' },
-		{ BoxState::unableToSet, ' ' }, // 'u'
+		{ BoxState::unableToSet, '.' }, // 'u'
 		{ BoxState::hit, 'h' },
 		{ BoxState::shot, 'o' },
 		{ BoxState::down, 'd' },
@@ -60,9 +65,9 @@ char** Model::getEnemyBoardConvertedToCharTable()
 {
 	mapStateChar =
 	{
-		{ BoxState::free, ' ' }, // 'f'
+		{ BoxState::free, '.' }, // 'f'
 		{ BoxState::set, 'i' },
-		{ BoxState::unableToSet, ' ' }, // 'u'
+		{ BoxState::unableToSet, '.' }, // 'u'
 		{ BoxState::hit, 'h' },
 		{ BoxState::shot, 'o' },
 		{ BoxState::down, 'd' },
@@ -115,7 +120,7 @@ bool Model::addShipToList(Coordinates c, Orientation o, int n)
 	{
 		Box** boxes;
 		boxes = board->setShip(c, o, n);
-		Ship* s = new Ship(n, boxes);
+		Ship* s = new Ship(n, boxes, c, o);
 		ships.push_back(s);
 		numberOfXMastedShips[s->getNumberOfMasts() - 1]++;
 		return true;

@@ -13,7 +13,9 @@ public:
 	void setMessage(std::string);
 	void printMenu();
 	void printLoadGame();
+	void printSaveGame();
 	void printExit();
+	void printPause();
 
 	void printSetShips();
 	void printSetShipsRandomly();
@@ -32,5 +34,8 @@ public:
 
 	void printBoardAsCharTable(char**, int = 10);
 	void printShipsLeft(int* numberOfXMastedShips, int maxNumberOfShips);
+
+
+	void printToBeDone();
 };
 

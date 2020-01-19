@@ -24,10 +24,28 @@ void View::printLoadGame()
 	std::cout << "To be done";
 }
 
+void View::printSaveGame()
+{
+	system("cls");
+	std::cout << "SAVE GAME\n"
+			  << "Enter name of file u want to save this game as: ";
+
+}
+
 void View::printExit()
 {
 	system("cls");
 	std::cout << "Bye.\n";
+}
+
+void View::printPause()
+{
+	system("cls");
+	std::cout << "-----PAUSE-----\n"
+		<< "1. RESUME \n"
+		<< "2. SAVE GAME \n"
+		<< "3. MENU\n";
+	printMessage();
 }
 
 void View::printSetShips()
@@ -162,6 +180,12 @@ void View::printShipsLeft(int* numberOfXMastedShips, int maxNumberOfShips)
 	{
 		std::cout << maxNumberOfShips - i << "-masted: " << numberOfXMastedShips[maxNumberOfShips - i - 1] << "\n";
 	}
+}
+
+void View::printToBeDone()
+{
+	system("cls");
+	std::cout << "To be done.";
 }
 
 void View::printMessage()

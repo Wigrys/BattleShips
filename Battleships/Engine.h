@@ -8,11 +8,16 @@ enum State
 {
 	menuState,
 	loadGameState,
+	saveGameState,
+
 	setShipsState,
 	setShipsRandomlyState,
 	setShipsByHandState,
+
 	playState,
 	endGameState,
+	finishGameState,
+
 	pauseState,
 	exitState
 };
@@ -31,6 +36,8 @@ private:
 	Tour whoseTour;
 	bool gameInProgress;
 	bool playerWon;
+	bool wasEscapePressed;
+
 	View* view;
 	const int maxNumberOfMasts = 1;
 	std::map<State, State> mapEscapeState;
@@ -50,4 +57,7 @@ public:
 	bool areCoordinatesOfShotOkay(Coordinates);
 
 	std::list<int> readInput(int);
+	std::string makeSaveGamePath(std::string);
+	bool saveGame(std::string);
+
 };

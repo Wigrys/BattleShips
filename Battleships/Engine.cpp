@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include <conio.h>
 #include <windows.h>
+#include <fstream>
 
 Engine::Engine()
 {
@@ -52,6 +53,21 @@ void Engine::run()
 			}
 			break;
 		}
+		case loadGameState:
+		{
+			view->printLoadGame();
+			break;
+		}
+		case saveGameState:
+		{
+			std::string nameOfFile;
+			view->printSaveGame();
+			std::cin >> nameOfFile;
+			saveGame(nameOfFile);
+			std::cout << "\nsaveing finished";
+			state = pauseState;
+			break;
+		}
 		case setShipsState:
 		{
 			view->printSetShips();
@@ -90,9 +106,6 @@ void Engine::run()
 			state = playState;
 			break;
 		}
-		case loadGameState:
-			view->printLoadGame();
-			break;
 		case playState:
 		{
 			view->printPlayingBoards(player[0]->getBoardConvertedToCharTable(), player[1]->getEnemyBoardConvertedToCharTable());
@@ -101,21 +114,23 @@ void Engine::run()
 			{
 				if (!playerShoot())
 					whoseTour = Tour::computer;
+
+				if (!player[1]->isAnyShipAlive())
+				{
+					playerWon = true;
+					state = endGameState;
+				}
 			}
 			else
 			{
 				if (!computerShoot())
 					whoseTour = Tour::player;
-			}
-			if (!player[0]->isAnyShipAlive())
-			{
-				playerWon = false;
-				state = endGameState;
-			}
-			if (!player[1]->isAnyShipAlive())
-			{
-				playerWon = true;
-				state = endGameState;
+
+				if (!player[0]->isAnyShipAlive())
+				{
+					playerWon = false;
+					state = endGameState;
+				}
 			}
 			break;
 		}
@@ -127,19 +142,50 @@ void Engine::run()
 			else
 				view->printComputerWon();
 			Sleep(3000);
+			state = finishGameState;
+			break;
+		}
+		case finishGameState:
+		{
 			delete player[0];
 			delete player[1];
 			state = menuState;
 			break;
 		}
 		case pauseState:
-
+		{
+			wasEscapePressed = false;
+			view->printPause();
+			auto input = readInput(1);
+			switch (*input.begin())
+			{
+			case '1':
+				state = playState;
+				break;
+			case '2':
+				state = saveGameState;
+				break;
+			case '3':
+				state = finishGameState;
+				break;
+			default:
+				view->setMessage("There is no such operation! Try again:\n");
+			}
 			break;
+		}
 		case exitState:
+		{
 			view->printExit();
 			close = true;
 			break;
 		}
+		default:
+		{
+			view->printToBeDone();
+		}
+		}
+
+
 	}
 }
 
@@ -247,7 +293,11 @@ bool Engine::playerShoot()
 	{
 		view->printPlayerShot();
 		auto input = readInput(2);
-
+		if (wasEscapePressed)
+		{
+			state = pauseState;
+			return true;
+		}
 		std::list<int>::iterator iterator = input.begin();
 		if (areCoordinatesOfShotOkay(Coordinates() = { *iterator++ - '0', *iterator - '0' }))
 		{
@@ -273,11 +323,10 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 	for (int i = 0; i < numberOfInput;)
 	{
 		int inp = _getch();
-		if (inp = 27) //27 = ESC
-			state = pauseState; 
-		if ((inp >= '0' && inp <= '9') || (inp == 'h' || inp == 'v'))
+		if ((inp >= '0' && inp <= '9') || (inp == 'h' || inp == 'v') || inp == 27) //27 == ESC
 		{
 			inputList.push_back(inp);
+
 			std::list<int>::iterator iter = inputList.begin();
 
 			for (int h = 0; h < i; h++)
@@ -290,7 +339,61 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 			Sleep(200);
 			i++;
 		}
+		if (inp == 27 && state == playState)
+		{
+			wasEscapePressed = true;
+			inputList.push_back(inp);
+			return inputList;
+		}
 	}
 	return inputList;
+}
+
+std::string Engine::makeSaveGamePath(std::string path)
+{
+	if (path.find(".txt") == std::string::npos)
+	{
+		path += ".txt";
+	}
+	return path;
+}
+
+bool Engine::saveGame(std::string nameOfFile)
+{
+	std::ofstream file;
+	nameOfFile = makeSaveGamePath(nameOfFile);
+	file.open((nameOfFile).c_str()); //zmienic sciezke zapisywania, moze zrobic to na nowszej bibliotece? prawdopodobnie boost or smth
+	for (int i = 0; i < 2; i++)
+	{
+		//ktory gracz jest zapisywany
+		file << "p" << i << ":\n";
+
+		//zapisywanie statkow (w kolejnosci z listy) -> 1;2 5;h  / 1;1 2;v
+		auto ships = player[i]->getShips();
+		for(std::list<Ship*>::iterator it = ships.begin() ; it != ships.end() ;   it++)
+		{
+			Coordinates startCoords = (*it)->getStartCoords();
+			Orientation orientation = (*it)->getOrientation();
+			file << (*it)->getNumberOfMasts()
+				<< ";" << startCoords.x << " " << startCoords.y
+				<< ";" << ((orientation == Orientation::horizontal) ? 'h' : 'v');
+			file << "\n";
+		}
+
+		//zapisywanie boardu z pominieciem unableToSet oraz Free BoxStateow
+		auto board = player[i]->getBoardConvertedToCharTable();
+		for (int y = 0; y < player[0]->getBoardSize(); y++)
+		{
+			for (int x = 0; x < player[0]->getBoardSize(); x++)
+			{
+				file << board[x][y] << " ";
+			}
+			file << "\n";
+		}
+		file << "\n";
+	}
+
+	file.close();
+	return true;
 }
 

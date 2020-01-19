@@ -21,6 +21,7 @@ public:
 
 	int getBoardSize();
 	int getMaxNumberOfMasts();
+	std::list<Ship*> getShips();
 	char** getBoardConvertedToCharTable();
 	int* getNumberOfXMastedShips();
 	char** getEnemyBoardConvertedToCharTable();
