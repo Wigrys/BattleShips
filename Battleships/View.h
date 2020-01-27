@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <list>
 class Board;
 
 class View
@@ -34,7 +35,10 @@ public:
 
 	void printBoardAsCharTable(char**, int = 10);
 	void printShipsLeft(int* numberOfXMastedShips, int maxNumberOfShips);
-
+	
+	void printExistingSaveGames(std::list<std::string>*);
+	void printSaveGameResult(bool);
+	void printLoadGameResult(bool);
 
 	void printToBeDone();
 };

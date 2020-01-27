@@ -32,32 +32,30 @@ class Engine
 {
 private:
 	State state;
+	View* view;
+	int maxNumberOfMasts = 4;
 	Model* player[2];
+
 	Tour whoseTour;
 	bool gameInProgress;
 	bool playerWon;
 	bool wasEscapePressed;
-
-	View* view;
-	const int maxNumberOfMasts = 1;
-	std::map<State, State> mapEscapeState;
-public:
-
-	Engine();
-    void run();
 
 	Model* setShipsByHand();
 	Model* setShipsRandomly();
 
 	bool playerShoot();
 	bool computerShoot();
-
-	bool AIShoot(Board* enemyBoard);
-
 	bool areCoordinatesOfShotOkay(Coordinates);
 
 	std::list<int> readInput(int);
-	std::string makeSaveGamePath(std::string);
+	std::string makeSavedGamePath(std::string);
+	std::list<std::string>* getListOfSaveGames();
 	bool saveGame(std::string);
+	bool loadGame(std::string);
+public:
+
+	Engine();
+    void run();
 
 };

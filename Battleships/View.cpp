@@ -21,7 +21,7 @@ void View::printMenu()
 void View::printLoadGame()
 {
 	system("cls");
-	std::cout << "To be done";
+	std::cout << "LOAD GAME\n";
 }
 
 void View::printSaveGame()
@@ -180,6 +180,32 @@ void View::printShipsLeft(int* numberOfXMastedShips, int maxNumberOfShips)
 	{
 		std::cout << maxNumberOfShips - i << "-masted: " << numberOfXMastedShips[maxNumberOfShips - i - 1] << "\n";
 	}
+}
+
+void View::printExistingSaveGames(std::list<std::string>* savegames)
+{
+	std::cout << "Available savegames: \n";
+	for(auto itr = savegames->begin() ; itr != savegames->end() ; ++itr)
+	{
+		std::cout << "->   " << *itr << "\n";
+	}
+	std::cout << "Write name of save u want to load: ";
+}
+
+void View::printSaveGameResult(bool result)
+{
+	if (result)
+		std::cout << "Game saved succesfully!";
+	else
+		std::cout << "Game could not be saved :/";
+}
+
+void View::printLoadGameResult(bool result)
+{
+	if (result)
+		std::cout << "Game load succesfully!";
+	else
+		std::cout << "Game could not be loaded :/";
 }
 
 void View::printToBeDone()

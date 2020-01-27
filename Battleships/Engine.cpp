@@ -2,28 +2,20 @@
 #include <conio.h>
 #include <windows.h>
 #include <fstream>
+#include <filesystem>
+#include <string>
 
 Engine::Engine()
 {
-	player[0] = new Model(maxNumberOfMasts); //player[0] is first player
-	player[1] = new Model(maxNumberOfMasts); //player[1] is second player/computer
 	view = new View();
 	state = menuState;
 	if (rand() % 2 == 0)
 		whoseTour = Tour::player;
 	else
 		whoseTour = Tour::computer;
-	mapEscapeState =
-	{
-		{State::loadGameState, State::menuState},
-		{State::setShipsState, State::menuState},
-		{State::setShipsRandomlyState, State::setShipsState},
-		{State::setShipsByHandState, State::setShipsState},
-		{State::playState, State::pauseState},
-		{State::pauseState, State::playState}
-	};
 	gameInProgress = false;
 	playerWon = false;
+	wasEscapePressed = false;
 }
 
 void Engine::run()
@@ -55,16 +47,32 @@ void Engine::run()
 		}
 		case loadGameState:
 		{
+			std::string nameOfFile;
+			bool result = true;
 			view->printLoadGame();
+			view->printExistingSaveGames(getListOfSaveGames());
+			std::cin >> nameOfFile;
+			result = loadGame(nameOfFile);
+			view->printLoadGameResult(result);
+			Sleep(1000);
+			if (result)
+				state = playState;
+			else
+				state = menuState;
 			break;
 		}
-		case saveGameState:
+		case saveGameState: //done
 		{
 			std::string nameOfFile;
-			view->printSaveGame();
-			std::cin >> nameOfFile;
-			saveGame(nameOfFile);
-			std::cout << "\nsaveing finished";
+			bool result = true;
+			do
+			{
+				view->printSaveGame();
+				std::cin >> nameOfFile;
+				result = saveGame(nameOfFile);
+				view->printSaveGameResult(result);
+				Sleep(1000);
+			} while (!result);
 			state = pauseState;
 			break;
 		}
@@ -184,8 +192,6 @@ void Engine::run()
 			view->printToBeDone();
 		}
 		}
-
-
 	}
 }
 
@@ -273,11 +279,6 @@ bool Engine::computerShoot() //completely random shot
 	return hit;
 }
 
-bool Engine::AIShoot(Board* enemyBoard)
-{
-	return true;
-}
-
 bool Engine::areCoordinatesOfShotOkay(Coordinates coords)
 {
 	if (coords.x < 0 || coords.x > 9 || coords.y < 0 || coords.y > 9)
@@ -349,28 +350,54 @@ std::list<int> Engine::readInput(int numberOfInput) //zczytuje okreslona ilosc z
 	return inputList;
 }
 
-std::string Engine::makeSaveGamePath(std::string path)
+std::string Engine::makeSavedGamePath(std::string path)
 {
-	if (path.find(".txt") == std::string::npos)
+	if (path.find(".save") == std::string::npos)
 	{
-		path += ".txt";
+		path += ".save";
 	}
-	return path;
+	return ".\\savegames\\" + path;
+}
+
+std::list<std::string>* Engine::getListOfSaveGames()
+{
+	std::list<std::string>* savegames = new std::list<std::string>();
+	std::string path = ".\\savegames";
+	std::string ext = ".save";
+	namespace fs = std::filesystem;
+	if (!fs::exists(path))
+		fs::create_directory(path);
+
+	for (fs::directory_iterator itr(path); itr != fs::directory_iterator(); ++itr)
+	{
+		if (itr->path().extension() == ext)
+			savegames->push_back(itr->path().stem().string());
+	}
+	return savegames;
 }
 
 bool Engine::saveGame(std::string nameOfFile)
 {
+	if (!std::filesystem::exists(std::filesystem::path(".\\savegames")))
+	{
+		std::filesystem::create_directories(std::filesystem::path(".\\savegames"));
+	}
 	std::ofstream file;
-	nameOfFile = makeSaveGamePath(nameOfFile);
-	file.open((nameOfFile).c_str()); //zmienic sciezke zapisywania, moze zrobic to na nowszej bibliotece? prawdopodobnie boost or smth
+	file.open((makeSavedGamePath(nameOfFile)).c_str());
+
+	if (!file.good())
+		return false;
+
+	//liczba masztow najwiekszego zestatkow + czyja tura
+	file << maxNumberOfMasts << " " << whoseTour << "\n";
 	for (int i = 0; i < 2; i++)
 	{
 		//ktory gracz jest zapisywany
-		file << "p" << i << ":\n";
+		file << i << "\n";
 
 		//zapisywanie statkow (w kolejnosci z listy) -> 1;2 5;h  / 1;1 2;v
 		auto ships = player[i]->getShips();
-		for(std::list<Ship*>::iterator it = ships.begin() ; it != ships.end() ;   it++)
+		for (std::list<Ship*>::iterator it = ships.begin(); it != ships.end(); it++)
 		{
 			Coordinates startCoords = (*it)->getStartCoords();
 			Orientation orientation = (*it)->getOrientation();
@@ -381,19 +408,85 @@ bool Engine::saveGame(std::string nameOfFile)
 		}
 
 		//zapisywanie boardu z pominieciem unableToSet oraz Free BoxStateow
-		auto board = player[i]->getBoardConvertedToCharTable();
+		int which = (i == 0 ? 1 : 0);
+		auto board = player[which]->getBoardConvertedToCharTable();
 		for (int y = 0; y < player[0]->getBoardSize(); y++)
 		{
 			for (int x = 0; x < player[0]->getBoardSize(); x++)
 			{
-				file << board[x][y] << " ";
+				file << board[x][y];
 			}
 			file << "\n";
 		}
-		file << "\n";
 	}
-
-	file.close();
-	return true;
+	if (file.good())
+	{
+		file.close();
+		return true;
+	}
+	else
+	{
+		file.close();
+		return false;
+	}
 }
 
+bool Engine::loadGame(std::string nameOfFile)
+{
+	if (!std::filesystem::exists(std::filesystem::path(".\\savegames")))
+	{
+		std::filesystem::create_directories(std::filesystem::path(".\\savegames"));
+	}
+	std::ifstream file;
+	file.open(makeSavedGamePath(nameOfFile).c_str());
+
+	if (!file.good())
+		return false;
+
+	std::string line;
+	std::getline(file, line); //to moze sprawic problem
+	maxNumberOfMasts = line[0] - '0';
+	whoseTour = ((line[2] == '0') ? Tour::player : Tour::computer);
+
+	bool shotsOnBoard[10][10][2] = { false };
+
+	for (int i = 0; i < 2; i++)
+	{
+		player[i] = new Model(maxNumberOfMasts);
+		std::getline(file, line);
+		int numOfPlayer = std::stoi(line);
+		float numOfShips = (((float)maxNumberOfMasts + 1) / 2) * (float)maxNumberOfMasts;
+		for (int h = 0; h < numOfShips; h++)
+		{
+			std::getline(file, line);
+			int numberOfMasts = line[0] - '0';
+			Coordinates coords = { line[2] - '0', line[4] - '0' };
+			Orientation orientation = (line[6] == 'v' ? vertical : horizontal);
+			player[i]->addShipToList(coords, orientation, numberOfMasts);
+		}
+
+		int which = ((i == 0) ? 1 : 0);
+		for (int y = 0; y < 10; ++y)
+		{
+			std::getline(file, line);
+			for (int x = 0; x < 10; ++x)
+			{
+				if (line[x] == 'h' || line[x] == 'd' || line[x] == 'o')
+					shotsOnBoard[x][y][which] = true;
+			}
+		}
+	}
+	for (int i = 0; i < 2; i++)
+	{
+		for (int y = 0; y < 10; ++y)
+		{
+			std::getline(file, line);
+			for (int x = 0; x < 10; ++x)
+			{
+				if (shotsOnBoard[x][y][i])
+					player[i]->receiveShot({ x, y });
+			}
+		}
+	}
+	return true;
+}
